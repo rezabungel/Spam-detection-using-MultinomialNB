@@ -77,11 +77,13 @@ python3.10 -m pip install -r requirements.txt
 Required libraries
 |   Library name   |        How to download manually          |                            Documentation                            |
 | ---------------- | ---------------------------------------- | ------------------------------------------------------------------- |
+| NLTK             | `python3.10 -m pip install nltk`         | [NLTK documentation][documentation-nltk]                            |
 | NumPy            | `python3.10 -m pip install numpy`        | [NumPy documentation][documentation-numpy]                          |
 | Pandas           | `python3.10 -m pip install pandas`       | [Pandas documentation][documentation-pandas]                        |
 | Matplotlib       | `python3.10 -m pip install matplotlib`   | [Matplotlib documentation][documentation-matplotlib]                |
 | Scikit-learn     | `python3.10 -m pip install scikit-learn` | [Scikit-learn documentation][documentation-scikit-learn]            |
 | Jupyter Notebook | `python3.10 -m pip install notebook`     | [Jupyter Notebook documentation][documentation-jupyter]             |
+| String           | installed by default                     | [String documentation][documentation-string]                        |
 
 But it would be best to use a virtual environment as demonstrated in the [Installation](#installation) section, rather than installing all the libraries manually.
 
@@ -114,11 +116,13 @@ Distributed under the BSD 3-Clause "New" or "Revised" License. See [LICENSE](LIC
 [NumPy_home]: https://numpy.org
 [Matplotlib_home]: https://matplotlib.org
 
+[documentation-nltk]: https://www.nltk.org/index.html
 [documentation-numpy]: https://numpy.org/doc/
 [documentation-pandas]: https://pandas.pydata.org/docs/
 [documentation-matplotlib]: https://matplotlib.org/stable/users/index.html
 [documentation-scikit-learn]: https://scikit-learn.org/stable/user_guide.html
 [documentation-jupyter]: https://docs.jupyter.org/en/latest/
+[documentation-string]: https://docs.python.org/3.10/library/string.html
 
 [link_to_dataset]: https://www.kaggle.com/datasets/venky73/spam-mails-dataset/data
 
