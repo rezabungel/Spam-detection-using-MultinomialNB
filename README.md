@@ -83,6 +83,7 @@ Required libraries
 | Matplotlib       | `python3.10 -m pip install matplotlib`   | [Matplotlib documentation][documentation-matplotlib]                |
 | Scikit-learn     | `python3.10 -m pip install scikit-learn` | [Scikit-learn documentation][documentation-scikit-learn]            |
 | Jupyter Notebook | `python3.10 -m pip install notebook`     | [Jupyter Notebook documentation][documentation-jupyter]             |
+| WordCloud        | `python3.10 -m pip install wordcloud`    | [WordCloud documentation][documentation-wordcloud]                  |
 | String           | installed by default                     | [String documentation][documentation-string]                        |
 
 But it would be best to use a virtual environment as demonstrated in the [Installation](#installation) section, rather than installing all the libraries manually.
@@ -122,6 +123,7 @@ Distributed under the BSD 3-Clause "New" or "Revised" License. See [LICENSE](LIC
 [documentation-matplotlib]: https://matplotlib.org/stable/users/index.html
 [documentation-scikit-learn]: https://scikit-learn.org/stable/user_guide.html
 [documentation-jupyter]: https://docs.jupyter.org/en/latest/
+[documentation-wordcloud]: https://amueller.github.io/word_cloud/
 [documentation-string]: https://docs.python.org/3.10/library/string.html
 
 [link_to_dataset]: https://www.kaggle.com/datasets/venky73/spam-mails-dataset/data
