@@ -85,6 +85,7 @@ Required libraries
 | Jupyter Notebook | `python3.10 -m pip install notebook`     | [Jupyter Notebook documentation][documentation-jupyter]             |
 | WordCloud        | `python3.10 -m pip install wordcloud`    | [WordCloud documentation][documentation-wordcloud]                  |
 | String           | installed by default                     | [String documentation][documentation-string]                        |
+| Math             | installed by default                     | [Math documentation][documentation-math]                            |
 
 But it would be best to use a virtual environment as demonstrated in the [Installation](#installation) section, rather than installing all the libraries manually.
 
@@ -125,6 +126,7 @@ Distributed under the BSD 3-Clause "New" or "Revised" License. See [LICENSE](LIC
 [documentation-jupyter]: https://docs.jupyter.org/en/latest/
 [documentation-wordcloud]: https://amueller.github.io/word_cloud/
 [documentation-string]: https://docs.python.org/3.10/library/string.html
+[documentation-math]: https://docs.python.org/3.10/library/math.html
 
 [link_to_dataset]: https://www.kaggle.com/datasets/venky73/spam-mails-dataset/data
 
