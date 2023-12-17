@@ -13,20 +13,65 @@ class SpamDetector:
         try:
             self.__word_frequencies = pd.read_csv(path_to_dataset_word_frequencies, index_col=0)
 
-            self.__count_unique_words = len(self.__word_frequencies) # N(Unique Words)
+            self.__count_unique_words = len(self.__word_frequencies.frequency) # N(Unique Words)
             self.__count_words_ham = sum(self.__word_frequencies.frequency_ham) # N(Words ∈ ham)
             self.__count_words_spam = sum(self.__word_frequencies.frequency_spam) # N(Words ∈ spam)
 
-        except:
-            pass # TO DO
+        except FileNotFoundError:
+            raise FileNotFoundError(
+                f'\n\tError: The DataFrame file of word frequencies is not found at "{path_to_dataset_word_frequencies}".\n'
+                f"\tThe DataFrame must have the following structure:\n"
+                f"\t\tColumns should be labeled as follows: frequency, frequency_ham, frequency_spam.\n"
+                f"\t\tIndexes should be made up of words.\n\n"
+                f"\tExample:\n"
+                f"\t\t,frequency,frequency_ham,frequency_spam\n"
+                f"\t\tdeal,3655,3549,106\n"
+                f"\t\tpleas,3243,2737,506\n"
+                f"\t\tga,3034,2861,173\n"
+                f"\t\tmeter,2721,2718,3\n"
+                f"\t\tthank,2304,2125,179\n"
+            )
+        except AttributeError:
+            raise AttributeError(
+                f"\n\tError: The DataFrame file of word frequencies has an incorrect structure.\n"
+                f"\tThe DataFrame must have the following structure:\n"
+                f"\t\tColumns should be labeled as follows: frequency, frequency_ham, frequency_spam.\n"
+                f"\t\tIndexes should be made up of words.\n\n"
+                f"\tExample:\n"
+                f"\t\t,frequency,frequency_ham,frequency_spam\n"
+                f"\t\tdeal,3655,3549,106\n"
+                f"\t\tpleas,3243,2737,506\n"
+                f"\t\tga,3034,2861,173\n"
+                f"\t\tmeter,2721,2718,3\n"
+                f"\t\tthank,2304,2125,179\n"
+            )
 
         try:
             email_ratios = pd.read_csv(path_to_dataset_email_ratios, index_col=0)
 
-            self.__ham_probability = email_ratios.ham['ratios-to-total-emails']
-            self.__spam_probability = email_ratios.spam['ratios-to-total-emails']
-        except:
-            pass # TO DO
+            self.__ham_probability = email_ratios.ham['ratios-to-total-emails'] # P(ham)
+            self.__spam_probability = email_ratios.spam['ratios-to-total-emails'] # P(spam)
+
+        except FileNotFoundError:
+            raise FileNotFoundError(
+                f'\n\tError: The DataFrame file containing the ratios of ham and spam emails to total emails is not found at "{path_to_dataset_email_ratios}".\n'
+                f"\tThe DataFrame must have the following structure:\n"
+                f"\t\tColumns should be labeled as follows: ham, spam.\n"
+                f"\t\tIndex should be only one and named: ratios-to-total-emails.\n\n"
+                f"\tExample:\n"
+                f"\t\t,ham,spam\n"
+                f"\t\tratios-to-total-emails,0.7127329192546584,0.28726708074534163\n"
+            )
+        except (AttributeError, KeyError):
+            raise AttributeError(
+                f"\n\tError: The DataFrame file containing the ratios of ham and spam emails to total emails has an incorrect structure.\n"
+                f"\tThe DataFrame must have the following structure:\n"
+                f"\t\tColumns should be labeled as follows: ham, spam.\n"
+                f"\t\tIndex should be only one and named: ratios-to-total-emails.\n\n"
+                f"\tExample:\n"
+                f"\t\t,ham,spam\n"
+                f"\t\tratios-to-total-emails,0.7127329192546584,0.28726708074534163\n"
+            )
 
     def detecting_spam(self, message: str) -> int:
         """
