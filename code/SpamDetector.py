@@ -3,6 +3,8 @@ import math
 import numpy as np
 import pandas as pd
 
+import TextProcessor
+
 class SpamDetector:
     __smoothing_factor = 1.0 # When the smoothing factor is equal to 1, it corresponds to Laplace smoothing.
 
@@ -27,7 +29,7 @@ class SpamDetector:
             pass # TO DO
 
     def detecting_spam(self, message: str) -> int:
-        '''
+        """
         Method for detecting spam in a message.
         
         Parameters:
@@ -35,82 +37,153 @@ class SpamDetector:
         
         Returns:
             int: Returns 1 if the message is considered spam, and 0 if it is ham.
-        '''
+        """
         
-        # TO DO: Preparing a message
+        processor = TextProcessor.TextProcessor()
+        prepared_message = processor.pipeline(message)
 
-        ham = math.log(self.__ham_probability) + self.__calculate_ham(message)
-        spam = math.log(self.__spam_probability) + self.__calculate_spam(message)
+        ham = self.__log_probability_ham_email(self.__ham_probability) + self.__sum_log_prob_words_ham(prepared_message)
+        spam = self.__log_probability_spam_email(self.__spam_probability) + self.__sum_log_prob_words_spam(prepared_message)
 
         return int(spam > ham)
-
-    def __calculate_ham(self, prepared_message: list[str]) -> float:
-        '''
-        TO DO: description
+    
+    def __log_probability_ham_email(self, ham_email_probability: float) -> float:
+        """
+        Calculate the log probability of receiving ham email.
 
         Parameters:
-            prepared_message (list[str]): TO DO: description.
+            ham_email_probability (float): The probability of receiving ham email.
 
         Returns:
-            float: TO DO: description.
+            float: The logarithm of ham email probability.
 
         Formula:
-             n              N(Word_i ∈ ham) + smoothing_factor
-             ∑ (log(--------------------------------------------------))
-            i=1      N(Words ∈ ham) + smoothing_factor*N(Unique Words)
+                               N ∈ ham
+            log(P(ham)) = log(---------) = log(ham_email_probability)
+                                  N
+
+        Where:
+            N ∈ ham: Count of ham emails.
+            N: Count of all emails.
+
+        Note:
+            The ham_email_probability is used; the formula simply underscores information on how this variable was obtained.
+        """
+
+        return math.log(ham_email_probability)
+
+    def __log_probability_spam_email(self, spam_email_probability: float) -> float:
+        """
+        Calculate the log probability of receiving spam email.
+
+        Parameters:
+            spam_email_probability (float): The probability of receiving spam email.
+
+        Returns:
+            float: The logarithm of spam email probability.
+
+        Formula:
+                                N ∈ spam
+            log(P(spam)) = log(----------) = log(spam_email_probability)
+                                    N
+
+        Where:
+            N ∈ spam: Count of spam emails.
+            N: Count of all emails.
+
+        Note:
+            The spam_email_probability is used; the formula simply underscores information on how this variable was obtained.
+        """
+
+        return math.log(spam_email_probability)
+
+    def __sum_log_prob_words_ham(self, prepared_message: list[str]) -> float:
+        """
+        Calculate the sum of log probabilities of words from a given message, given that they are in the ham category.
+        
+        Parameters:
+            prepared_message (list[str]): The list of processed words in the message.
+
+        Returns:
+            float: The sum of log probabilities of words in the ham category from the given message.
+
+        Formula:
+            n                              n             N(Word_i ∈ ham) + smoothing_factor
+            ∑ log(P(Word_i ∈ ham | ham)) = ∑ log(--------------------------------------------------)
+           i=1                            i=1     N(Words ∈ ham) + smoothing_factor*N(Unique Words)
 
         Where:
             N(Word_i ∈ ham): Count of occurrences of the Word_i in ham emails.
             N(Words ∈ ham): Total count of all Words that appeared in ham emails.
             N(Unique Words): Count of all unique words.
             smoothing_factor: Smoothing parameter to avoid zero.
-        '''
+        """
 
-        sum_ham = 0
+        sum_log_prob_word_i_ham = 0
         numerator = self.__count_words_ham + self.__smoothing_factor*self.__count_unique_words
 
-        sum_ham = sum([math.log((self.__word_frequencies.frequency_ham.get(word_i, 0)+self.__smoothing_factor) / numerator) for word_i in prepared_message])
+        sum_log_prob_word_i_ham = sum([math.log((self.__word_frequencies.frequency_ham.get(word_i, 0)+self.__smoothing_factor) / numerator) for word_i in prepared_message])
 
-        return sum_ham
+        return sum_log_prob_word_i_ham
 
-    def __calculate_spam(self, prepared_message: list[str]) -> float:
-        '''
-        TO DO: description
-
+    def __sum_log_prob_words_spam(self, prepared_message: list[str]) -> float:
+        """
+        Calculate the sum of log probabilities of words from a given message, given that they are in the spam category.
+        
         Parameters:
-            prepared_message (list[str]): TO DO: description.
+            prepared_message (list[str]): The list of processed words in the message.
 
         Returns:
-            float: TO DO: description.
+            float: The sum of log probabilities of words in the spam category from the given message.
 
         Formula:
-             n              N(Word_i ∈ spam) + smoothing_factor
-             ∑ (log(---------------------------------------------------))
-            i=1      N(Words ∈ spam) + smoothing_factor*N(Unique Words)
+            n                                n             N(Word_i ∈ spam) + smoothing_factor
+            ∑ log(P(Word_i ∈ spam | spam)) = ∑ log(---------------------------------------------------)
+           i=1                              i=1     N(Words ∈ spam) + smoothing_factor*N(Unique Words)
 
         Where:
             N(Word_i ∈ spam): Count of occurrences of the Word_i in spam emails.
             N(Words ∈ spam): Total count of all Words that appeared in spam emails.
             N(Unique Words): Count of all unique words.
             smoothing_factor: Smoothing parameter to avoid zero.
-        '''
+        """
         
-        sum_spam = 0
+        sum_log_prob_word_i_spam = 0
         numerator = self.__count_words_spam + self.__smoothing_factor*self.__count_unique_words
 
-        sum_spam = sum([math.log((self.__word_frequencies.frequency_spam.get(word_i, 0)+self.__smoothing_factor) / numerator) for word_i in prepared_message])
+        sum_log_prob_word_i_spam = sum([math.log((self.__word_frequencies.frequency_spam.get(word_i, 0)+self.__smoothing_factor) / numerator) for word_i in prepared_message])
 
-        return sum_spam
+        return sum_log_prob_word_i_spam
 
     @classmethod
-    def set_smoothing_factor(cls, k: float) -> None:
-        cls.__smoothing_factor = k
+    def set_smoothing_factor(cls, smoothing_factor: float) -> None:
+        """
+        Set the smoothing factor for the class.
+
+        Parameters:
+            smoothing_factor (float): The smoothing factor to be set. Should be in the range 0 < k <= 1.
+        
+        Returns:
+            None
+        """
+
+        cls.__smoothing_factor = smoothing_factor
 
 
 
 if __name__ == "__main__":
     
-    path1 = '../dataset/model_data/word_frequencies.csv'
-    path2 = '../dataset/model_data/email_ratios.csv'
+    path_to_dataset_word_frequencies = '../dataset/model_data/word_frequencies.csv'
+    path_to_dataset_email_ratios = '../dataset/model_data/email_ratios.csv'
 
-    test = SpamDetector(path1, path2)
+    detector = SpamDetector(path_to_dataset_word_frequencies, path_to_dataset_email_ratios)
+
+    # Some examples
+    emails = pd.read_csv('../dataset/original_data/spam_ham_dataset.csv')
+    
+    for i in range(1, 4):
+        print(f"Email №{i}\n")
+        print(f"{emails.text[i*10]}")
+        print(f"\nThe algorithm determined that the email... {detector.detecting_spam(emails.text[i*10])}")
+        print(f"It was expected that the email... {emails.label_num[i*10]}")
+        print(f"*******************************************************************************\n")
