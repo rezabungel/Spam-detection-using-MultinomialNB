@@ -5,11 +5,63 @@ import pandas as pd
 
 import TextProcessor
 
+
 class SpamDetector:
-    __smoothing_factor = 1.0 # When the smoothing factor is equal to 1, it corresponds to Laplace smoothing.
+    """
+    A class for detecting spam in email messages using a Naive Multinomial Bayes classifier.
+
+    Class Attributes:
+        __smoothing_factor (float): The smoothing factor.
+            When equal to 1, corresponds to Laplace smoothing.
+            Default is 1.0. Should be in the range 0 < __smoothing_factor <= 1.
+
+    Attributes:
+        __word_frequencies (pd.DataFrame): The DataFrame of word frequencies.
+        __count_unique_words (int): The count of unique words; sourced from DataFrame word frequencies.
+        __count_words_ham (int): The count of words in ham emails; sourced from DataFrame word frequencies.
+        __count_words_spam (int): The count of words in spam emails; sourced from DataFrame word frequencies.
+        __ham_probability (float): The probability of ham emails; sourced from DataFrame email_ratios.
+        __spam_probability (float): The probability of spam emails; sourced from DataFrame email_ratios.
+
+    Note:
+        Smoothing is used to handle the issue of zero probabilities in the Naive Bayes classifier.
+    """
+
+    __smoothing_factor = 1.0
 
     def __init__(self, path_to_dataset_word_frequencies: str, path_to_dataset_email_ratios: str) -> None:
-        
+        """
+        Initializes a SpamDetector object.
+
+        Parameters:
+            path_to_dataset_word_frequencies (str): The file path to the DataFrame file of word frequencies.
+                The DataFrame must have the following structure:
+                    Columns should be labeled as follows: frequency, frequency_ham, frequency_spam.
+                    Indexes should be made up of words.
+                Example:
+                    ,frequency,frequency_ham,frequency_spam
+                    deal,3655,3549,106
+                    pleas,3243,2737,506
+                    ga,3034,2861,173
+                    meter,2721,2718,3
+                    thank,2304,2125,179
+
+            path_to_dataset_email_ratios (str): The file path to the DataFrame file containing the ratios of ham and spam emails to total emails.
+                The DataFrame must have the following structure:
+                    Columns should be labeled as follows: ham, spam.
+                    Index should be only one and named: ratios-to-total-emails.
+                Example:
+                    ,ham,spam
+                    ratios-to-total-emails,0.7127329192546584,0.28726708074534163
+
+        Raises:
+            FileNotFoundError: If the specified DataFrame file of word frequencies or email relationships is not found.
+            AttributeError: If the DataFrame file of word frequencies or email ratios has an incorrect structure.
+
+        Returns:
+            None
+        """
+
         try:
             self.__word_frequencies = pd.read_csv(path_to_dataset_word_frequencies, index_col=0)
 
@@ -75,22 +127,46 @@ class SpamDetector:
 
     def detecting_spam(self, message: str) -> int:
         """
-        Method for detecting spam in a message.
+        Detects spam in a message.
         
         Parameters:
-            message (str): String containing the message text.
+            message (str): The string containing the message text.
         
         Returns:
             int: Returns 1 if the message is considered spam, and 0 if it is ham.
+
+        Formula:
+                                                 n
+            (№1) P(ham | Word_i) = log(P(ham)) + ∑ log(P(Word_i | ham))
+                                                i=1
+                
+                                                   n
+            (№2) P(spam | Word_i) = log(P(spam)) + ∑ log(P(Word_i | spam))
+                                                  i=1
+
+        Where:
+            log(P(ham)): The logarithm of the probability of receiving ham email.
+                          Calculated using the method "__log_probability_ham_email".
+
+            log(P(spam)): The logarithm of the probability of receiving spam email.
+                           Calculated using the method "__log_probability_spam_email".
+
+             n
+             ∑ log(P(Word_i | ham)): Sum of log probabilities of words in the ham category from the given message.
+            i=1                       Calculated using the method "__sum_log_prob_words_ham".
+            
+             n
+             ∑ log(P(Word_i | spam)): Sum of log probabilities of words in the spam category from the given message.
+            i=1                        Calculated using the method "__sum_log_prob_words_spam".
         """
-        
+
         processor = TextProcessor.TextProcessor()
         prepared_message = processor.pipeline(message)
 
-        ham = self.__log_probability_ham_email(self.__ham_probability) + self.__sum_log_prob_words_ham(prepared_message)
-        spam = self.__log_probability_spam_email(self.__spam_probability) + self.__sum_log_prob_words_spam(prepared_message)
+        ham_prob_given_word_i = self.__log_probability_ham_email(self.__ham_probability) + self.__sum_log_prob_words_ham(prepared_message)
+        spam_prob_given_word_i = self.__log_probability_spam_email(self.__spam_probability) + self.__sum_log_prob_words_spam(prepared_message)
 
-        return int(spam > ham)
+        return int(spam_prob_given_word_i > ham_prob_given_word_i)
     
     def __log_probability_ham_email(self, ham_email_probability: float) -> float:
         """
@@ -153,15 +229,15 @@ class SpamDetector:
             float: The sum of log probabilities of words in the ham category from the given message.
 
         Formula:
-            n                              n             N(Word_i ∈ ham) + smoothing_factor
-            ∑ log(P(Word_i ∈ ham | ham)) = ∑ log(--------------------------------------------------)
-           i=1                            i=1     N(Words ∈ ham) + smoothing_factor*N(Unique Words)
+            n                        n             N(Word_i ∈ ham) + smoothing_factor
+            ∑ log(P(Word_i | ham)) = ∑ log(--------------------------------------------------)
+           i=1                      i=1     N(Words ∈ ham) + smoothing_factor*N(Unique Words)
 
         Where:
             N(Word_i ∈ ham): Count of occurrences of the Word_i in ham emails.
             N(Words ∈ ham): Total count of all Words that appeared in ham emails.
             N(Unique Words): Count of all unique words.
-            smoothing_factor: Smoothing parameter to avoid zero.
+            smoothing_factor: Smoothing factor to avoid zero.
         """
 
         sum_log_prob_word_i_ham = 0
@@ -182,17 +258,17 @@ class SpamDetector:
             float: The sum of log probabilities of words in the spam category from the given message.
 
         Formula:
-            n                                n             N(Word_i ∈ spam) + smoothing_factor
-            ∑ log(P(Word_i ∈ spam | spam)) = ∑ log(---------------------------------------------------)
-           i=1                              i=1     N(Words ∈ spam) + smoothing_factor*N(Unique Words)
+            n                         n             N(Word_i ∈ spam) + smoothing_factor
+            ∑ log(P(Word_i | spam)) = ∑ log(---------------------------------------------------)
+           i=1                       i=1     N(Words ∈ spam) + smoothing_factor*N(Unique Words)
 
         Where:
             N(Word_i ∈ spam): Count of occurrences of the Word_i in spam emails.
             N(Words ∈ spam): Total count of all Words that appeared in spam emails.
             N(Unique Words): Count of all unique words.
-            smoothing_factor: Smoothing parameter to avoid zero.
+            smoothing_factor: Smoothing factor to avoid zero.
         """
-        
+
         sum_log_prob_word_i_spam = 0
         numerator = self.__count_words_spam + self.__smoothing_factor*self.__count_unique_words
 
@@ -206,15 +282,19 @@ class SpamDetector:
         Set the smoothing factor for the class.
 
         Parameters:
-            smoothing_factor (float): The smoothing factor to be set. Should be in the range 0 < k <= 1.
+            smoothing_factor (float): The smoothing factor to be set. Should be in the range 0 < smoothing_factor <= 1.
         
+        Raises:
+            ValueError: If the smoothing_factor is not in the valid range.
+
         Returns:
             None
         """
 
-        cls.__smoothing_factor = smoothing_factor
-
-
+        if 0 < smoothing_factor and smoothing_factor <= 1:
+            cls.__smoothing_factor = smoothing_factor
+        else:
+            raise ValueError(f"Error: Smoothing factor should be in the range 0 < smoothing_factor <= 1. Got: {smoothing_factor}")
 
 if __name__ == "__main__":
     

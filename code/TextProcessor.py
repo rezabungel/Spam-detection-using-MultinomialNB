@@ -7,7 +7,7 @@ from nltk.stem.porter import PorterStemmer # We have various stemmers; let's uti
 
 class TextProcessor:
     """
-    Text processing pipeline class
+    Text processing pipeline class.
 
     Attributes:
         __len_min_ch (int): Minimum length of words. Default is 2. Should be greater than 0.
