@@ -84,6 +84,7 @@ Required libraries
 | Scikit-learn     | `python3.10 -m pip install scikit-learn` | [Scikit-learn documentation][documentation-scikit-learn]            |
 | Jupyter Notebook | `python3.10 -m pip install notebook`     | [Jupyter Notebook documentation][documentation-jupyter]             |
 | WordCloud        | `python3.10 -m pip install wordcloud`    | [WordCloud documentation][documentation-wordcloud]                  |
+| Multiprocessing  | installed by default                     | [Multiprocessing documentation][documentation-multiprocessing]      |
 | String           | installed by default                     | [String documentation][documentation-string]                        |
 | Math             | installed by default                     | [Math documentation][documentation-math]                            |
 
@@ -127,6 +128,7 @@ Distributed under the BSD 3-Clause "New" or "Revised" License. See [LICENSE](LIC
 [documentation-scikit-learn]: https://scikit-learn.org/stable/user_guide.html
 [documentation-jupyter]: https://docs.jupyter.org/en/latest/
 [documentation-wordcloud]: https://amueller.github.io/word_cloud/
+[documentation-multiprocessing]: https://docs.python.org/3.10/library/multiprocessing.html
 [documentation-string]: https://docs.python.org/3.10/library/string.html
 [documentation-math]: https://docs.python.org/3.10/library/math.html
 

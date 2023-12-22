@@ -298,13 +298,13 @@ class SpamDetector:
 
 if __name__ == "__main__":
     
-    path_to_dataset_word_frequencies = '../dataset/model_data/word_frequencies.csv'
-    path_to_dataset_email_ratios = '../dataset/model_data/email_ratios.csv'
+    path_to_dataset_word_frequencies = '../dataset/email_dataset_1/model_data/word_frequencies.csv'
+    path_to_dataset_email_ratios = '../dataset/email_dataset_1/model_data/email_ratios.csv'
 
     detector = SpamDetector(path_to_dataset_word_frequencies, path_to_dataset_email_ratios)
 
     # Some examples
-    emails = pd.read_csv('../dataset/original_data/spam_ham_dataset.csv')
+    emails = pd.read_csv('../dataset/email_dataset_1/spam_ham_dataset.csv')
     
     for i in range(1, 4):
         print(f"Email №{i}\n")
