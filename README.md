@@ -96,6 +96,8 @@ Dataset: [link][link_to_dataset]
 
 Dataset2: [link][link_to_dataset2]
 
+Dataset3: [link][link_to_dataset3]
+
 In progress...
 
 
@@ -134,6 +136,7 @@ Distributed under the BSD 3-Clause "New" or "Revised" License. See [LICENSE](LIC
 
 [link_to_dataset]: https://www.kaggle.com/datasets/venky73/spam-mails-dataset/data
 [link_to_dataset2]: https://www.kaggle.com/datasets/jackksoncsie/spam-email-dataset
+[link_to_dataset3]: https://www.kaggle.com/datasets/purusinghvi/email-spam-classification-dataset
 
 [Badge_Python]: https://img.shields.io/badge/3.10-ffffff?logo=python&logoColor=FFFFFF&label=Python&labelColor=000000
 [Badge_NumPy]: https://img.shields.io/badge/NumPy-000000?logo=numpy
