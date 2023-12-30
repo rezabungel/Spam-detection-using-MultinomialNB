@@ -1,5 +1,6 @@
 import multiprocessing
 import time
+from functools import wraps
 
 import pandas as pd
 
@@ -22,16 +23,43 @@ class TrainMultinomialNB:
         try:
             self.__email_dataset = pd.read_csv(path_to_email_dataset, index_col=0)
 
-            self.__word_frequencies = {}
+        except FileNotFoundError:
+            raise FileNotFoundError(
+                f'\n\tError: The DataFrame file of emails and labels is not found at "{path_to_email_dataset}".\n'
+                f"\tThe DataFrame must have the following structure:\n"
+                f"\t\tColumns should be labeled as follows: text, label.\n"
+                f"\tNote:\n"
+                f"\t\tlabel = 1 is spam, while label = 0 is ham.\n\n"
+                f"\tExample:\n"
+                f"\t\t,text,label\n"
+                f"\t\t0,Some text of some letter...,1\n"
+                f"\t\t1,Some text of some letter...,1\n"
+                f"\t\t2,Some text of some letter...,0\n"
+                f"\t\t3,Some text of some letter...,1\n"
+            )
 
-            self.__dataframe_email_ratios = pd.DataFrame
-            self.__dataframe_word_frequencies = pd.DataFrame
+        if not(['text', 'label'] == list(self.__email_dataset.columns) or ['label', 'text'] == list(self.__email_dataset.columns)):
+            raise AttributeError(
+                f'\n\tError: The DataFrame file of emails and labels has an incorrect structure.\n'
+                f"\tThe DataFrame must have the following structure:\n"
+                f"\t\tColumns should be labeled as follows: text, label.\n"
+                f"\tNote:\n"
+                f"\t\tlabel = 1 is spam, while label = 0 is ham.\n\n"
+                f"\tExample:\n"
+                f"\t\t,text,label\n"
+                f"\t\t0,Some text of some letter...,1\n"
+                f"\t\t1,Some text of some letter...,1\n"
+                f"\t\t2,Some text of some letter...,0\n"
+                f"\t\t3,Some text of some letter...,1\n"
+            )
 
-        except:
-            # TO DO.
-            pass
+        self.__word_frequencies = {}
+
+        self.__dataframe_email_ratios = pd.DataFrame
+        self.__dataframe_word_frequencies = pd.DataFrame
 
     def __calculate_execution_time(func):
+        @wraps(func)
         def wrapper(*args, **kwargs):
             if func.__name__ == 'train':
                 print(f"The beginning of training.")
