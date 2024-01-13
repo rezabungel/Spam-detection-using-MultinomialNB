@@ -35,9 +35,13 @@ In progress...
 ### <a name="built-with"> Built With </a>
 
 [![Badge Python][Badge_Python]][Python_home]
+[![Badge NLTK][Badge_NLTK]][NLTK_home]
+[![Badge Pandas][Badge_Pandas]][Pandas_home]
 [![Badge NumPy][Badge_NumPy]][NumPy_home]
+[![Badge Multiprocessing][Badge_Multiprocessing]][Multiprocessing_home]
+[![Badge Jupyter-Notebook][Badge_Jupyter-Notebook]][Jupyter-Notebook_home]
 [![Badge Matplotlib][Badge_Matplotlib]][Matplotlib_home]
-In progress...
+[![Badge WordCloud][Badge_WordCloud]][WordCloud_home]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -81,7 +85,6 @@ Required libraries
 | NumPy            | `python3.10 -m pip install numpy`        | [NumPy documentation][documentation-numpy]                          |
 | Pandas           | `python3.10 -m pip install pandas`       | [Pandas documentation][documentation-pandas]                        |
 | Matplotlib       | `python3.10 -m pip install matplotlib`   | [Matplotlib documentation][documentation-matplotlib]                |
-| Scikit-learn     | `python3.10 -m pip install scikit-learn` | [Scikit-learn documentation][documentation-scikit-learn]            |
 | Jupyter Notebook | `python3.10 -m pip install notebook`     | [Jupyter Notebook documentation][documentation-jupyter]             |
 | WordCloud        | `python3.10 -m pip install wordcloud`    | [WordCloud documentation][documentation-wordcloud]                  |
 | Multiprocessing  | installed by default                     | [Multiprocessing documentation][documentation-multiprocessing]      |
@@ -118,16 +121,22 @@ Distributed under the BSD 3-Clause "New" or "Revised" License. See [LICENSE](LIC
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+
+
 <!-- Markdown links -->
 [Python_home]: https://www.python.org
+[NLTK_home]: https://www.nltk.org
+[Pandas_home]: https://pandas.pydata.org
 [NumPy_home]: https://numpy.org
+[Multiprocessing_home]: https://docs.python.org/3.10/library/multiprocessing.html
+[Jupyter-Notebook_home]: https://jupyter.org
 [Matplotlib_home]: https://matplotlib.org
+[WordCloud_home]: http://amueller.github.io/word_cloud/
 
 [documentation-nltk]: https://www.nltk.org/index.html
 [documentation-numpy]: https://numpy.org/doc/
 [documentation-pandas]: https://pandas.pydata.org/docs/
 [documentation-matplotlib]: https://matplotlib.org/stable/users/index.html
-[documentation-scikit-learn]: https://scikit-learn.org/stable/user_guide.html
 [documentation-jupyter]: https://docs.jupyter.org/en/latest/
 [documentation-wordcloud]: https://amueller.github.io/word_cloud/
 [documentation-multiprocessing]: https://docs.python.org/3.10/library/multiprocessing.html
@@ -139,5 +148,10 @@ Distributed under the BSD 3-Clause "New" or "Revised" License. See [LICENSE](LIC
 [link_to_dataset3]: https://www.kaggle.com/datasets/purusinghvi/email-spam-classification-dataset
 
 [Badge_Python]: https://img.shields.io/badge/3.10-ffffff?logo=python&logoColor=FFFFFF&label=Python&labelColor=000000
+[Badge_NLTK]: https://img.shields.io/badge/NLTK-000000
+[Badge_Pandas]: https://img.shields.io/badge/Pandas-000000?logo=pandas
 [Badge_NumPy]: https://img.shields.io/badge/NumPy-000000?logo=numpy
+[Badge_Multiprocessing]: https://img.shields.io/badge/Multiprocessing-000000
+[Badge_Jupyter-Notebook]: https://img.shields.io/badge/Jupyter%20Notebook-000000?logo=jupyter&logoColor=white
 [Badge_Matplotlib]: https://img.shields.io/badge/Matplotlib-000000
+[Badge_WordCloud]: https://img.shields.io/badge/WordCloud-000000
