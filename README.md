@@ -90,6 +90,7 @@ Required libraries
 | Multiprocessing  | installed by default                     | [Multiprocessing documentation][documentation-multiprocessing]      |
 | String           | installed by default                     | [String documentation][documentation-string]                        |
 | Math             | installed by default                     | [Math documentation][documentation-math]                            |
+| os               | installed by default                     | [os documentation][documentation-os]                                |
 
 But it would be best to use a virtual environment as demonstrated in the [Installation](#installation) section, rather than installing all the libraries manually.
 
@@ -142,6 +143,7 @@ Distributed under the BSD 3-Clause "New" or "Revised" License. See [LICENSE](LIC
 [documentation-multiprocessing]: https://docs.python.org/3.10/library/multiprocessing.html
 [documentation-string]: https://docs.python.org/3.10/library/string.html
 [documentation-math]: https://docs.python.org/3.10/library/math.html
+[documentation-os]: https://docs.python.org/3.10/library/os.html
 
 [link_to_dataset]: https://www.kaggle.com/datasets/venky73/spam-mails-dataset/data
 [link_to_dataset2]: https://www.kaggle.com/datasets/jackksoncsie/spam-email-dataset
