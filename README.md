@@ -17,10 +17,18 @@
       <ul>
         <li><a href="#installation">Installation</a></li>
         <li><a href="#libraries">Libraries</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#information_about_datasets">Information about datasets</a>
+      <ul>  
         <li><a href="#dataset">Dataset</a></li>
+        <li><a href="#custom_dataset_format">Сustom Dataset Format</a></li>
+        <li><a href="#datasets_format_for_initializing_Multinomial_Naive_Bayes_Classifier">Datasets format for initializing Multinomial Naive Bayes Classifier</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+    <li><a href="#testing">Testing</a></li>
     <li><a href="#license">License</a></li>
   </ol>
 </details>
@@ -30,7 +38,17 @@
 <!-- About The Project -->
 ## <a name="about-the-project"> About The Project </a>
 
-In progress...
+NLP - Natural Language Processing. This field in machine learning is dedicated to the recognition, generation, and processing of spoken and written human language. It intersects the disciplines of artificial intelligence and linguistics. NLP addresses various natural language processing tasks, such as speech recognition, text processing, information extraction, information analysis, text and speech generation, automatic summarization, and machine translation. In this project, a solution for text analysis has been implemented to determine the category (spam or ham) of a given text (message).
+
+As of today, the issue of spam remains relevant. For instance, statistical data from 2019 provided by securelist.ru ([link_to_the_article][link_to_the_article_securelist]) indicate that globally, more than 50% of email traffic is comprised of spam. The share of spam in global email traffic for the year 2019 is shown in the figure below.
+
+![The share of spam in global email traffic, 2019.](./source_for_README/0_The_share_of_spam_in_global_email_traffic_2019.png)
+
+The project implements a **Multinomial Naive Bayes Classifier**. It is relatively simple to implement and demonstrates high accuracy, making it an effective solution for this problem. The implementation of the classifier addresses and resolves the following issues: "arithmetic overflow" and "unknown words". Laplace smoothing is used to address the latter issue, but you can set your own smoothing factor within the range `0 < __smoothing_factor <= 1`. Laplace smoothing corresponds to `__smoothing_factor = 1`. Classifier testing results confirm its high accuracy and suggest potential for further improvement.
+
+The project code is located in three files: <a href="./code/SpamDetector.py">SpamDetector.py</a>, <a href="./code/TextProcessor.py">TextProcessor.py</a>, and <a href="./code/TrainMultinomialNB.py">TrainMultinomialNB.py</a>. In addition to these core files, the project includes the <a href="./code/dataset_preparation_and_analysis.ipynb">dataset_preparation_and_analysis.ipynb</a> file, which contains analysis with graphs of <a href="./dataset/email_dataset_1/spam_ham_dataset.csv">dataset 1</a>. The testing results of the implemented classifier can be found in the <a href="./code/spam_classifier_testing.ipynb">spam_classifier_testing.ipynb</a> file.
+
+A detailed report on the theoretical and practical aspects of the work can be found in <a href="./%20Coursework%20Report.pdf">Coursework Report.pdf</a> (in Russian). Additionally, information about the practical implementation can be obtained from the code, which is sufficiently well-documented (I hope). The code documentation is provided in English. Information about the datasets used for training and testing can be found in the <a href="#dataset">Dataset</a> section. The structure of a dataset ready for training is presented in the <a href="#custom_dataset_format">Сustom Dataset Format</a> section. The structure of datasets obtained after training, which is used for initializing the classifier, is located in the <a href="#datasets_format_for_initializing_Multinomial_Naive_Bayes_Classifier">Datasets format for initializing Multinomial Naive Bayes Classifier</a> section. Information on how to work with this project is available in the <a href="#usage">Usage</a> section, while the testing results can be found in the <a href="#testing">Testing</a> section or in the corresponding <a href="./code/spam_classifier_testing.ipynb">file</a>.
 
 ### <a name="built-with"> Built With </a>
 
@@ -94,15 +112,66 @@ Required libraries
 
 But it would be best to use a virtual environment as demonstrated in the [Installation](#installation) section, rather than installing all the libraries manually.
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- Information about datasets -->
+## <a name="information_about_datasets">Information about datasets</a>
+
 ### <a name="dataset"> Dataset </a>
 
-Dataset: [link][link_to_dataset]
+The project utilizes three datasets of emails obtained from the [Kaggle][link_to_Kaggle]. Training was conducted for each dataset, so you can make use of the pre-trained models. It is worth noting that all datasets have different structures; therefore, before training, the datasets are standardized to the common format described in the <a href="#custom_dataset_format">Сustom Dataset Format</a> section.
 
-Dataset2: [link][link_to_dataset2]
+Dataset 1 - **Spam Mails Dataset**: [Kaggle dataset link][link_to_dataset1_kaggle] or [link in the repository][link_to_dataset1].<br>
+The training result utilized for model initialization:<br>
+&nbsp;&nbsp;&nbsp;&nbsp; -> The model's email ratios data is [here][email_ratios_dataset1].<br>
+&nbsp;&nbsp;&nbsp;&nbsp; -> The model's word frequencies data is [here][word_frequency_dataset1].
 
-Dataset3: [link][link_to_dataset3]
+Dataset 2 - **Spam email Dataset**: [Kaggle dataset link][link_to_dataset2_kaggle] or [link in the repository][link_to_dataset2].<br>
+The training result utilized for model initialization:<br>
+&nbsp;&nbsp;&nbsp;&nbsp; -> The model's email ratios data is [here][email_ratios_dataset2].<br>
+&nbsp;&nbsp;&nbsp;&nbsp; -> The model's word frequencies data is [here][word_frequency_dataset2].
 
-In progress...
+Dataset 3 - **Spam Email Classification Dataset**: [Kaggle dataset link][link_to_dataset3_kaggle]. (The dataset is not in the repository because it is too large.)<br>
+The training result utilized for model initialization:<br>
+&nbsp;&nbsp;&nbsp;&nbsp; -> The model's email ratios data is [here][email_ratios_dataset3].<br>
+&nbsp;&nbsp;&nbsp;&nbsp; -> The model's word frequencies data is [here][word_frequency_dataset3].
+
+### <a name="custom_dataset_format"> Сustom Dataset Format </a>
+
+To train the model, the dataset needs to be formatted to the following structure with ',' as the separator, where 0 represents "ham", and 1 represents "spam":
+|  ,  |             text            | label |
+| --- | --------------------------- | ----- |
+|  0  | Some text of some letter... |   1   |
+|  1  | Some text of some letter... |   1   |
+|  2  | Some text of some letter... |   0   |
+|  3  | Some text of some letter... |   1   |
+| ... |             ...             |  ...  |
+
+Examples of prepared and ready-to-train datasets 1 and 2 can be viewed [here][link_to_dataset1_ready_to_train] and [here][link_to_dataset2_ready_to_train].
+
+### <a name="datasets_format_for_initializing_Multinomial_Naive_Bayes_Classifier"> Datasets format for initializing Multinomial Naive Bayes Classifier </a>
+
+To initialize the Multinomial Naive Bayes Classifier, two datasets, namely email ratios and word frequencies, are utilized, which are obtained as a result of model training.<br>
+
+**Email Ratios Dataset:**<br>
+The structure of the email ratios dataset (using "," as a separator, the dataset consists of only one row):
+|           ,            |             ham              |             spam              |
+| ---------------------- | ---------------------------- | ----------------------------- |
+| ratios-to-total-emails | Ratio of ham to total emails | Ratio of spam to total emails |
+
+**Word Frequencies Dataset:**<br>
+The structure of the word frequencies dataset (using "," as a separator):
+|   ,    |          frequency          |            frequency_ham             |            frequency_spam             |
+| ------ | --------------------------- | ------------------------------------ | ------------------------------------- |
+| word_1 | Total occurrences of word_1 | Occurrences in Ham emails for word_1 | Occurrences in Spam emails for word_1 |
+| word_2 | Total occurrences of word_2 | Occurrences in Ham emails for word_2 | Occurrences in Spam emails for word_2 |
+| word_3 | Total occurrences of word_3 | Occurrences in Ham emails for word_3 | Occurrences in Spam emails for word_3 |
+| word_4 | Total occurrences of word_4 | Occurrences in Ham emails for word_4 | Occurrences in Spam emails for word_4 |
+|  ...   |             ...             |                 ...                  |                  ...                  |
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
@@ -110,6 +179,13 @@ In progress...
 ## <a name="usage"> Usage </a>
 
 In progress...
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- Testing -->
+## <a name="testing"> Testing </a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -145,9 +221,27 @@ Distributed under the BSD 3-Clause "New" or "Revised" License. See [LICENSE](LIC
 [documentation-math]: https://docs.python.org/3.10/library/math.html
 [documentation-os]: https://docs.python.org/3.10/library/os.html
 
-[link_to_dataset]: https://www.kaggle.com/datasets/venky73/spam-mails-dataset/data
-[link_to_dataset2]: https://www.kaggle.com/datasets/jackksoncsie/spam-email-dataset
-[link_to_dataset3]: https://www.kaggle.com/datasets/purusinghvi/email-spam-classification-dataset
+[link_to_Kaggle]: https://www.kaggle.com
+[link_to_dataset1_kaggle]: https://www.kaggle.com/datasets/venky73/spam-mails-dataset/data
+[link_to_dataset1]: ./dataset/email_dataset_1/spam_ham_dataset.csv
+[link_to_dataset1_ready_to_train]: ./dataset/email_dataset_1/model_data/spam_ham_dataset_ready_to_train.csv
+[email_ratios_dataset1]: ./dataset/email_dataset_1/model_data/email_ratios.csv
+[word_frequency_dataset1]: ./dataset/email_dataset_1/model_data/word_frequencies.csv
+[link_to_dataset2_kaggle]: https://www.kaggle.com/datasets/jackksoncsie/spam-email-dataset
+[link_to_dataset2]: ./dataset/email_dataset_2/emails.csv
+[link_to_dataset2_ready_to_train]: ./dataset/email_dataset_2/model_data/emails_ready_to_train.csv
+[email_ratios_dataset2]: ./dataset/email_dataset_2/model_data/email_ratios.csv
+[word_frequency_dataset2]: ./dataset/email_dataset_2/model_data/word_frequencies.csv
+[link_to_dataset3_kaggle]: https://www.kaggle.com/datasets/purusinghvi/email-spam-classification-dataset
+[email_ratios_dataset3]: ./dataset/email_dataset_3/model_data/email_ratios.csv
+[word_frequency_dataset3]: ./dataset/email_dataset_3/model_data/word_frequencies.csv
+
+[link_SpamDetector.py]: [./code/SpamDetector.py]
+[link_TextProcessor.py]: [./code/TextProcessor.py]
+[link_TrainMultinomialNB.py]: [./code/TrainMultinomialNB.py]
+[link_dataset_preparation_and_analysis.ipynb]: [./code/dataset_preparation_and_analysis.ipynb]
+[link_spam_classifier_testing.ipynb]: [./code/spam_classifier_testing.ipynb]
+[link_Coursework Report.pdf]: [./%20Coursework%20Report.pdf]
 
 [Badge_Python]: https://img.shields.io/badge/3.10-ffffff?logo=python&logoColor=FFFFFF&label=Python&labelColor=000000
 [Badge_NLTK]: https://img.shields.io/badge/NLTK-000000
@@ -157,3 +251,5 @@ Distributed under the BSD 3-Clause "New" or "Revised" License. See [LICENSE](LIC
 [Badge_Jupyter-Notebook]: https://img.shields.io/badge/Jupyter%20Notebook-000000?logo=jupyter&logoColor=white
 [Badge_Matplotlib]: https://img.shields.io/badge/Matplotlib-000000
 [Badge_WordCloud]: https://img.shields.io/badge/WordCloud-000000
+
+[link_to_the_article_securelist]: https://securelist.ru/spam-report-2019/95727/

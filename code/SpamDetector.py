@@ -8,7 +8,7 @@ import TextProcessor
 
 class SpamDetector:
     """
-    A class for detecting spam in email messages using a Naive Multinomial Bayes classifier.
+    A class for detecting spam in email messages using a Multinomial Naive Bayes classifier.
 
     Class Attributes:
         __smoothing_factor (float): The smoothing factor.
@@ -24,7 +24,7 @@ class SpamDetector:
         __spam_probability (float): The probability of spam emails; sourced from DataFrame email_ratios.
 
     Note:
-        Smoothing is used to handle the issue of zero probabilities in the Naive Bayes classifier.
+        Smoothing is used to handle the issue of zero probabilities in the Multinomial Naive Bayes classifier.
     """
 
     __smoothing_factor = 1.0
