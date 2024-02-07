@@ -14,6 +14,8 @@ class TrainMultinomialNB:
 
     Class Attributes:
         __processor (TextProcessor): An instance of TextProcessor is used for text processing and tokenization.
+            Default minimum word length is 2. Should be greater than or equal to 0.
+            Default includes stop words from the nltk and wordcloud libraries.
         __min_word_frequency (int): The minimum word frequency threshold.
             Default is 15. Should be greater than or equal to 0.
 
@@ -149,7 +151,7 @@ class TrainMultinomialNB:
 
         Note:
             The results of the trained Multinomial Naive Bayes classifier will be stored in two DataFrames:
-                the first one is ham and spam email ratios to total emails, and the second one is word frequencies.
+                ham and spam email ratios to total emails, and word frequencies.
         """
 
         if output_folder_path is None or not os.path.exists(output_folder_path):
@@ -160,8 +162,9 @@ class TrainMultinomialNB:
 
         self.__pipeline_prepare_dataframe_email_ratios(path_to_save_dataset_email_ratios)
         self.__pipeline_prepare_dataframe_word_frequencies(path_to_save_dataset_word_frequencies)
-        print(f'\tThe dataset_word_frequencies has been saved to "{path_to_save_dataset_word_frequencies}".')
+
         print(f'\tThe dataset_email_ratios has been saved to "{path_to_save_dataset_email_ratios}".')
+        print(f'\tThe dataset_word_frequencies has been saved to "{path_to_save_dataset_word_frequencies}".')
 
     @__calculate_execution_time
     def __pipeline_prepare_dataframe_email_ratios(self, path_to_save_dataset_email_ratios: str) -> None:
@@ -196,10 +199,12 @@ class TrainMultinomialNB:
 
         self.__merge_text_category()
 
+        print(f"\t\t{'-' * 80}")
         print(f"\t\tThe beginning of __prepare_text.")
         start_time = time.time()
         self.__email_dataset['text'] = self.__email_dataset['text'].apply(self.__prepare_text)
         print(f"\t\tThe end of prepare_text. Time spent: {'%.3f' % (time.time() - start_time)} seconds.")
+        print(f"\t\t{'-' * 80}")
 
         self.__initialize_dict_word_frequencies()
         self.__count_word_frequencies()
@@ -363,6 +368,25 @@ class TrainMultinomialNB:
         self.__dataframe_email_ratios = pd.DataFrame({'ham': [count_ham/(count_ham + count_spam)], 'spam': [count_spam/(count_ham + count_spam)]}, index=['ratios-to-total-emails'])
 
     @classmethod
+    def set_processor(cls, min_length: int = None, user_stop_words: list[str] | tuple[str] | set[str] = None) -> None:
+        """
+        Set parameters for an instance of TextProcessor to be used for text processing and tokenization.
+
+        Parameters:
+            min_length (int, optional): Minimum word length.
+                Default is 2. Should be greater than or equal to 0.
+            user_stop_words (list[str] | tuple[str] | set[str], optional): The user-defined list of stop words. This list is added to the stop words defined by default.
+                Default includes stop words from the nltk and wordcloud libraries.
+                Example:
+                    user_stop_words = ['ect', 'enron', 'hou', 'hpl', 'subject']
+
+        Returns:
+            None
+        """
+
+        cls.__processor = TextProcessor.TextProcessor(min_length, user_stop_words)
+
+    @classmethod
     def set_min_word_frequency(cls, min_word_frequency: int) -> None:
         """
         Set the minimum word frequency threshold for filtering words in the dataset.
@@ -389,5 +413,7 @@ if __name__ == "__main__":
 
     output_folder_path = '../dataset/email_dataset_1/model_data/'
 
-    test = TrainMultinomialNB(path_to_email_dataset)
-    test.train(output_folder_path)
+    training = TrainMultinomialNB(path_to_email_dataset)
+    training.set_processor(user_stop_words=['ect', 'enron', 'hou', 'hpl', 'subject'])
+
+    training.train(output_folder_path)

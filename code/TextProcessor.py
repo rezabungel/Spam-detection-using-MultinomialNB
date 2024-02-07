@@ -10,8 +10,10 @@ class TextProcessor:
     Text processing pipeline class.
 
     Attributes:
-        __len_min_ch (int): Minimum length of words. Default is 2. Should be greater than 0.
-        __stop_words (set[str]): Set of stop words. Set of stop words. Default includes stop words from nltk and wordcloud libraries, as well as additional words.
+        __len_min_ch (int): Minimum word length.
+            Default is 2. Should be greater than or equal to 0.
+        __stop_words (set[str]): Set of stop words.
+            Default includes stop words from the nltk and wordcloud libraries.
     """
 
     def __init__(self, min_length: int = None, user_stop_words: list[str] | tuple[str] | set[str] = None) -> None:
@@ -19,10 +21,17 @@ class TextProcessor:
         Initializes the TextProcessor object.
 
         Parameters:
-            min_length (int, optional): Minimum word length. If not specified, the default is 2. Should be greater than 0.
-            user_stop_words (list[str] | tuple[str] | set[str], optional): User-defined list of stop words. 
-                If not specified, only stop words from the nltk and wordcloud libraries, as well as additional words, will be used.
-                If specified, it will be added to the previously declared set of stop words.
+            min_length (int, optional): Minimum word length.
+                Default is 2. Should be greater than or equal to 0.
+            user_stop_words (list[str] | tuple[str] | set[str], optional): The user-defined list of stop words. This list is added to the stop words defined by default.
+                Default includes stop words from the nltk and wordcloud libraries.
+                Example:
+                    user_stop_words = ['ect', 'enron', 'hou', 'hpl', 'subject']
+
+        Raises:
+            ValueError: If the provided min_length is less than 0.
+            ValueError: If the provided user_stop_words is not a list, tuple, or set.
+            ValueError: If the provided user_stop_words contains anything other than strings.
 
         Returns:
             None
@@ -31,17 +40,25 @@ class TextProcessor:
         if min_length is None:
             self.__len_min_ch = 2
         else:
-            self.__len_min_ch = min_length
+            if min_length >= 0:
+                self.__len_min_ch = min_length
+            else:
+                raise ValueError(f"Error: min_length should be greater than or equal to 0. Got: {min_length}")
 
         stop_words_n1 = set(nltk.corpus.stopwords.words('english'))
         stop_words_n2 = set(wordcloud.STOPWORDS)
-        stop_words_n3 = set(['ect', 'enron', 'hou', 'hpl', 'subject'])
 
         if user_stop_words is None:
-            self.__stop_words = set.union(stop_words_n1, stop_words_n2, stop_words_n3)
+            self.__stop_words = set.union(stop_words_n1, stop_words_n2)
         else:
-            user_stop_words = set(user_stop_words)
-            self.__stop_words = set.union(stop_words_n1, stop_words_n2, stop_words_n3, user_stop_words)
+            if isinstance(user_stop_words, (list, tuple, set)):
+                if all(isinstance(word, str) for word in user_stop_words):
+                    user_stop_words = set(user_stop_words)
+                    self.__stop_words = set.union(stop_words_n1, stop_words_n2, user_stop_words)
+                else:
+                    raise ValueError("Error: user_stop_words should contain only strings.")
+            else:
+                raise ValueError(f"Error: user_stop_words should be a list, tuple, or set. Got {type(user_stop_words)}")
 
     def pipeline(self, raw_text: str) -> list[str]:
         """
@@ -60,7 +77,7 @@ class TextProcessor:
         prepared_text = self.__stemming(prepared_text)
         prepared_text = self.__tokenize(prepared_text)
 
-        return prepared_text 
+        return prepared_text
 
     def __remove_NonASCII(self, text: str) -> str:
         """
@@ -135,7 +152,7 @@ class TextProcessor:
 
 if __name__ == "__main__":
 
-    processor = TextProcessor()
+    processor = TextProcessor(min_length=1, user_stop_words=('ect', 'enron', 'hou', 'hpl', 'subject'))
 
     raw_text = "This is a sample text for processing."
     processed_text = processor.pipeline(raw_text)

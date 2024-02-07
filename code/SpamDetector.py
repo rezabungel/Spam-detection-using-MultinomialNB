@@ -11,6 +11,9 @@ class SpamDetector:
     A class for detecting spam in email messages using a Multinomial Naive Bayes classifier.
 
     Class Attributes:
+        __processor (TextProcessor): An instance of TextProcessor is used for text processing and tokenization.
+            Default minimum word length is 2. Should be greater than or equal to 0.
+            Default includes stop words from the nltk and wordcloud libraries.
         __smoothing_factor (float): The smoothing factor.
             When equal to 1, corresponds to Laplace smoothing.
             Default is 1.0. Should be in the range 0 < __smoothing_factor <= 1.
@@ -27,6 +30,7 @@ class SpamDetector:
         Smoothing is used to handle the issue of zero probabilities in the Multinomial Naive Bayes classifier.
     """
 
+    __processor = TextProcessor.TextProcessor()
     __smoothing_factor = 1.0
 
     def __init__(self, path_to_dataset_word_frequencies: str, path_to_dataset_email_ratios: str) -> None:
@@ -160,8 +164,7 @@ class SpamDetector:
             i=1                        Calculated using the method "__sum_log_prob_words_spam".
         """
 
-        processor = TextProcessor.TextProcessor()
-        prepared_message = processor.pipeline(message)
+        prepared_message = self.__processor.pipeline(message)
 
         ham_prob_given_word_i = self.__log_probability_ham_email(self.__ham_probability) + self.__sum_log_prob_words_ham(prepared_message)
         spam_prob_given_word_i = self.__log_probability_spam_email(self.__spam_probability) + self.__sum_log_prob_words_spam(prepared_message)
@@ -277,6 +280,25 @@ class SpamDetector:
         return sum_log_prob_word_i_spam
 
     @classmethod
+    def set_processor(cls, min_length: int = None, user_stop_words: list[str] | tuple[str] | set[str] = None) -> None:
+        """
+        Set parameters for an instance of TextProcessor to be used for text processing and tokenization.
+
+        Parameters:
+            min_length (int, optional): Minimum word length.
+                Default is 2. Should be greater than or equal to 0.
+            user_stop_words (list[str] | tuple[str] | set[str], optional): The user-defined list of stop words. This list is added to the stop words defined by default.
+                Default includes stop words from the nltk and wordcloud libraries.
+                Example:
+                    user_stop_words = ['ect', 'enron', 'hou', 'hpl', 'subject']
+
+        Returns:
+            None
+        """
+
+        cls.__processor = TextProcessor.TextProcessor(min_length, user_stop_words)
+
+    @classmethod
     def set_smoothing_factor(cls, smoothing_factor: float) -> None:
         """
         Set the smoothing factor for the class.
@@ -296,16 +318,17 @@ class SpamDetector:
         else:
             raise ValueError(f"Error: Smoothing factor should be in the range 0 < smoothing_factor <= 1. Got: {smoothing_factor}")
 
+
 if __name__ == "__main__":
-    
+
     path_to_dataset_word_frequencies = '../dataset/email_dataset_1/model_data/word_frequencies.csv'
     path_to_dataset_email_ratios = '../dataset/email_dataset_1/model_data/email_ratios.csv'
 
     detector = SpamDetector(path_to_dataset_word_frequencies, path_to_dataset_email_ratios)
+    detector.set_processor(user_stop_words=['ect', 'enron', 'hou', 'hpl', 'subject'])
 
     # Some examples
     emails = pd.read_csv('../dataset/email_dataset_1/spam_ham_dataset.csv')
-    
     for i in range(1, 4):
         print(f"Email №{i}\n")
         print(f"{emails.text[i*10]}")
