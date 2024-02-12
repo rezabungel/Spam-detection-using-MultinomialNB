@@ -21,13 +21,20 @@
     </li>
     <li>
       <a href="#information_about_datasets">Information about datasets</a>
-      <ul>  
+      <ul>
         <li><a href="#dataset">Dataset</a></li>
         <li><a href="#custom_dataset_format">Сustom Dataset Format</a></li>
         <li><a href="#datasets_format_for_initializing_Multinomial_Naive_Bayes_Classifier">Datasets format for initializing Multinomial Naive Bayes Classifier</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+    <li>
+      <a href="#usage">Usage</a>
+      <ul>
+        <li><a href="#Class_TextProcessor">Class TextProcessor</a></li>
+        <li><a href="#Class_TrainMultinomialNB">Class TrainMultinomialNB</a></li>
+        <li><a href="#Class_SpamDetector">Class SpamDetector</a></li>
+      </ul>
+    </li>
     <li><a href="#testing">Testing</a></li>
     <li><a href="#license">License</a></li>
   </ol>
@@ -141,7 +148,7 @@ The training result utilized for model initialization:<br>
 ### <a name="custom_dataset_format"> Сustom Dataset Format </a>
 
 To train the model, the dataset needs to be formatted to the following structure with ',' as the separator, where 0 represents "ham", and 1 represents "spam":
-|  ,  |             text            | label |
+|     |             text            | label |
 | --- | --------------------------- | ----- |
 |  0  | Some text of some letter... |   1   |
 |  1  | Some text of some letter... |   1   |
@@ -157,13 +164,13 @@ To initialize the Multinomial Naive Bayes Classifier, two datasets, namely email
 
 **Email Ratios Dataset:**<br>
 The structure of the email ratios dataset (using "," as a separator, the dataset consists of only one row):
-|           ,            |             ham              |             spam              |
+|                        |             ham              |             spam              |
 | ---------------------- | ---------------------------- | ----------------------------- |
 | ratios-to-total-emails | Ratio of ham to total emails | Ratio of spam to total emails |
 
 **Word Frequencies Dataset:**<br>
 The structure of the word frequencies dataset (using "," as a separator):
-|   ,    |          frequency          |            frequency_ham             |            frequency_spam             |
+|        |          frequency          |            frequency_ham             |            frequency_spam             |
 | ------ | --------------------------- | ------------------------------------ | ------------------------------------- |
 | word_1 | Total occurrences of word_1 | Occurrences in Ham emails for word_1 | Occurrences in Spam emails for word_1 |
 | word_2 | Total occurrences of word_2 | Occurrences in Ham emails for word_2 | Occurrences in Spam emails for word_2 |
@@ -178,7 +185,331 @@ The structure of the word frequencies dataset (using "," as a separator):
 <!-- Usage -->
 ## <a name="usage"> Usage </a>
 
-In progress...
+The project implements three classes: SpamDetector, TrainMultinomialNB, and TextProcessor. They are located in modules under their respective names.
+
+### <a name="Class_TextProcessor"> Class TextProcessor </a> - <a href="./code/TextProcessor.py">here</a>.
+
+The TextProcessor class is used for text processing and tokenization. This class has only one public method, called `pipeline`, representing a text processing pipeline. This pipeline includes the following steps: first, all non-ASCII characters are removed from the passed text, then the text is converted to lowercase and short words are removed, then stop-words are removed, stemming is applied, and finally tokenization occurs.<br>
+When initializing an object of the TextProcessor class, you can influence the pipeline. You can set the minimum word length to be considered short (by default, this is 2; you can set any value greater than or equal to 0). Also, user-defined words can be added to the default stop word list (the default list includes stop words from the NLTK and WordCloud libraries), expanding the set of stop words that will be removed from the text.<br>
+The TextProcessor class is highly versatile; it can be used wherever the implemented pipeline is needed. Specifically for this task, it is used in two other classes: TrainMultinomialNB and SpamDetector.
+
+<details>
+  <summary><div>
+
+```python
+def __init__(self, min_length: int = None, user_stop_words: list[str] | tuple[str] | set[str] = None) -> None:
+```
+  </div></summary>
+
+```python
+    """
+    Initializes the TextProcessor object.
+
+    Parameters:
+        min_length (int, optional): Minimum word length.
+            Default is 2. Should be greater than or equal to 0.
+        user_stop_words (list[str] | tuple[str] | set[str], optional): The user-defined list of stop words. This list is added to the stop words defined by default.
+            Default includes stop words from the nltk and wordcloud libraries.
+            Example:
+                user_stop_words = ['ect', 'enron', 'hou', 'hpl', 'subject']
+
+    Raises:
+        ValueError: If the provided min_length is less than 0.
+        ValueError: If the provided user_stop_words is not a list, tuple, or set.
+        ValueError: If the provided user_stop_words contains anything other than strings.
+
+    Returns:
+        None
+    """
+```
+</details>
+
+<details>
+  <summary><div>
+
+```python
+def pipeline(self, raw_text: str) -> list[str]:
+```
+  </div></summary>
+
+```python
+    """
+    Processes the text through predefined processing stages.
+
+    Parameters:
+        raw_text (str): The raw input text.
+
+    Returns:
+        list[str]: The list of processed words.
+    """
+```
+</details>
+
+### <a name="Class_TrainMultinomialNB"> Class TrainMultinomialNB </a> - <a href="./code/TrainMultinomialNB.py">here</a>.
+
+The TrainMultinomialNB class is used for training the classifier. Training is performed based on a prepared dataset of emails, the structure of which is presented in the <a href="#custom_dataset_format">Сustom Dataset Format</a> section. The result of the training is two CSV files, the structure of which can be viewed in the <a href="#datasets_format_for_initializing_Multinomial_Naive_Bayes_Classifier">Datasets format for initializing Multinomial Naive Bayes Classifier</a> section.<br>
+When initializing an object of the TrainMultinomialNB class, it is necessary to specify the path to the prepared dataset of email messages.<br>
+You can influence the training process through the class methods. Before starting training, you can set the minimum word frequency, which will be significant for the classifier, using the `set_min_word_frequency` method. By default, this value is 15. This means that if a specific word occurs less than 15 times during training, it will not be added to the CSV file with word frequencies. Also, before starting training, you can influence the initialization of the TextProcessor class object by passing desired handler parameters using the `set_processor` method.<br>
+Model training starts by calling the `train` method, which takes the path to the folder where the two resulting CSV files will be saved. This parameter is optional, and if not passed, the result will be saved next to the email dataset file.<br>
+It is worth noting the private method `__prepare_text`, which is implemented using parallelization technology. Parallelization is performed across all processor cores. Using this technology significantly reduces the model training time.
+
+<details>
+  <summary><div>
+
+```python
+def __init__(self, path_to_email_dataset: str) -> None:
+```
+  </div></summary>
+
+```python
+    """
+    Initializes a TrainMultinomialNB object.
+
+    Parameters:
+        path_to_email_dataset (str): The file path to the DataFrame file of emails and labels.
+            The DataFrame must have the following structure:
+                Columns should be labeled as follows: text, label.
+                    Note: label = 1 is spam, while label = 0 is ham.
+                Example:
+                    ,text,label
+                    0,Some text of some letter...,1
+                    1,Some text of some letter...,1
+                    2,Some text of some letter...,0
+                    3,Some text of some letter...,1
+    
+    Raises:
+        FileNotFoundError: If the specified DataFrame file of emails and labels is not found.
+        AttributeError: If the DataFrame file of emails and labels has an incorrect structure.
+
+    Returns:
+        None
+    """
+```
+</details>
+
+<details>
+  <summary><div>
+
+```python
+def train(self, output_folder_path: str = None) -> None:
+```
+  </div></summary>
+
+```python
+    """
+    Trains the Multinomial Naive Bayes classifier based on the provided email dataset during object initialization.
+
+    Parameters:
+        output_folder_path (str, optional): The folder path where the resulting DataFrames will be saved.
+            If not provided or the folder does not exist, the DataFrames will be saved next to the DataFrame file containing emails and labels.
+
+    Returns:
+        None
+
+    Note:
+        The results of the trained Multinomial Naive Bayes classifier will be stored in two DataFrames:
+            ham and spam email ratios to total emails, and word frequencies.
+    """
+```
+</details>
+
+<details>
+  <summary><div>
+
+```python
+@classmethod
+def set_processor(cls, min_length: int = None, user_stop_words: list[str] | tuple[str] | set[str] = None) -> None:
+```
+  </div></summary>
+
+```python
+    """
+    Set parameters for an instance of TextProcessor to be used for text processing and tokenization.
+
+    Parameters:
+        min_length (int, optional): Minimum word length.
+            Default is 2. Should be greater than or equal to 0.
+        user_stop_words (list[str] | tuple[str] | set[str], optional): The user-defined list of stop words. This list is added to the stop words defined by default.
+            Default includes stop words from the nltk and wordcloud libraries.
+            Example:
+                user_stop_words = ['ect', 'enron', 'hou', 'hpl', 'subject']
+
+    Returns:
+        None
+    """
+```
+</details>
+
+<details>
+  <summary><div>
+
+```python
+@classmethod
+def set_min_word_frequency(cls, min_word_frequency: int) -> None:
+```
+  </div></summary>
+
+```python
+    """
+    Set the minimum word frequency threshold for filtering words in the dataset.
+
+    Parameters:
+        min_word_frequency (int): The minimum word frequency threshold. Should be greater than or equal to 0.
+
+    Raises:
+        ValueError: If the provided min_word_frequency is less than 0.
+
+    Returns:
+        None
+    """
+```
+</details>
+
+###  <a name="Class_SpamDetector"> Class SpamDetector </a> - <a href="./code/SpamDetector.py">here</a>.
+
+The SpamDetector class is used for email classification. To initialize an object of this class, you need to pass the paths to two CSV files obtained after model training.<br>
+You can influence the classifier using the class methods. Using the `set_smoothing_factor` method, you can change the value of the smoothing factor to any other value in the range from 0 to 1, inclusive. By default, the smoothing factor value is set to 1, which suggests Laplace smoothing. Also, using the `set_processor` method, you can set parameters for initializing an object of the TextProcessor class.<br>
+To determine whether an email belongs to any class, the `detecting_spam` method is used, implementing the Multinomial Naive Bayes classifier. This method takes a message as an argument that needs to be classified. The result of the method's work is the category of the class to which the message belongs: 1 - spam, 0 - ham.
+
+<details>
+  <summary><div>
+
+```python
+def __init__(self, path_to_dataset_word_frequencies: str, path_to_dataset_email_ratios: str) -> None:
+```
+  </div></summary>
+
+```python
+    """
+    Initializes a SpamDetector object.
+
+    Parameters:
+        path_to_dataset_word_frequencies (str): The file path to the DataFrame file of word frequencies.
+            The DataFrame must have the following structure:
+                Columns should be labeled as follows: frequency, frequency_ham, frequency_spam.
+                Indexes should be made up of words.
+            Example:
+                ,frequency,frequency_ham,frequency_spam
+                deal,3655,3549,106
+                pleas,3243,2737,506
+                ga,3034,2861,173
+                meter,2721,2718,3
+                thank,2304,2125,179
+
+        path_to_dataset_email_ratios (str): The file path to the DataFrame file containing the ratios of ham and spam emails to total emails.
+            The DataFrame must have the following structure:
+                Columns should be labeled as follows: ham, spam.
+                Index should be only one and named: ratios-to-total-emails.
+            Example:
+                ,ham,spam
+                ratios-to-total-emails,0.7127329192546584,0.28726708074534163
+
+    Raises:
+        FileNotFoundError: If the specified DataFrame file of word frequencies or email relationships is not found.
+        AttributeError: If the DataFrame file of word frequencies or email ratios has an incorrect structure.
+
+    Returns:
+        None
+    """
+```
+</details>
+
+<details>
+  <summary><div>
+
+```python
+def detecting_spam(self, message: str) -> int:
+```
+  </div></summary>
+
+```python
+    """
+    Detects spam in a message.
+    
+    Parameters:
+        message (str): The string containing the message text.
+    
+    Returns:
+        int: Returns 1 if the message is considered spam, and 0 if it is ham.
+
+    Formula:
+                                             n
+        (№1) P(ham | Word_i) = log(P(ham)) + ∑ log(P(Word_i | ham))
+                                            i=1
+            
+                                               n
+        (№2) P(spam | Word_i) = log(P(spam)) + ∑ log(P(Word_i | spam))
+                                              i=1
+
+    Where:
+        log(P(ham)): The logarithm of the probability of receiving ham email.
+                        Calculated using the method "__log_probability_ham_email".
+
+        log(P(spam)): The logarithm of the probability of receiving spam email.
+                        Calculated using the method "__log_probability_spam_email".
+
+            n
+            ∑ log(P(Word_i | ham)): Sum of log probabilities of words in the ham category from the given message.
+           i=1                       Calculated using the method "__sum_log_prob_words_ham".
+        
+            n
+            ∑ log(P(Word_i | spam)): Sum of log probabilities of words in the spam category from the given message.
+           i=1                        Calculated using the method "__sum_log_prob_words_spam".
+    """
+```
+</details>
+
+<details>
+  <summary><div>
+
+```python
+@classmethod
+def set_processor(cls, min_length: int = None, user_stop_words: list[str] | tuple[str] | set[str] = None) -> None:
+```
+  </div></summary>
+
+```python
+    """
+    Set parameters for an instance of TextProcessor to be used for text processing and tokenization.
+
+    Parameters:
+        min_length (int, optional): Minimum word length.
+            Default is 2. Should be greater than or equal to 0.
+        user_stop_words (list[str] | tuple[str] | set[str], optional): The user-defined list of stop words. This list is added to the stop words defined by default.
+            Default includes stop words from the nltk and wordcloud libraries.
+            Example:
+                user_stop_words = ['ect', 'enron', 'hou', 'hpl', 'subject']
+
+    Returns:
+        None
+    """
+```
+</details>
+
+<details>
+  <summary><div>
+
+```python
+@classmethod
+def set_smoothing_factor(cls, smoothing_factor: float) -> None:
+```
+  </div></summary>
+
+```python
+    """
+    Set the smoothing factor for the class.
+
+    Parameters:
+        smoothing_factor (float): The smoothing factor to be set. Should be in the range 0 < smoothing_factor <= 1.
+    
+    Raises:
+        ValueError: If the smoothing_factor is not in the valid range.
+
+    Returns:
+        None
+    """
+```
+</details>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -186,6 +517,8 @@ In progress...
 
 <!-- Testing -->
 ## <a name="testing"> Testing </a>
+
+In progress...
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
