@@ -35,7 +35,15 @@
         <li><a href="#Class_SpamDetector">Class SpamDetector</a></li>
       </ul>
     </li>
-    <li><a href="#testing">Testing</a></li>
+    <li><a href="#training">Training</a></li>
+    <li>
+      <a href="#testing">Testing</a>
+      <ul>
+        <li><a href="#some_information_about_testing">Some information about testing</a></li>
+        <li><a href="#dataset_1_testing_results">Dataset 1 Testing Results: Spam Mails Dataset</a></li>
+        <li><a href="#dataset_2_testing_results">Dataset 2 Testing Results: Spam email Dataset</a></li>
+      </ul>
+    </li>
     <li><a href="#license">License</a></li>
   </ol>
 </details>
@@ -164,9 +172,9 @@ To initialize the Multinomial Naive Bayes Classifier, two datasets, namely email
 
 **Email Ratios Dataset:**<br>
 The structure of the email ratios dataset (using "," as a separator, the dataset consists of only one row):
-|                        |             ham              |             spam              |
-| ---------------------- | ---------------------------- | ----------------------------- |
-| ratios-to-total-emails | Ratio of ham to total emails | Ratio of spam to total emails |
+|                            |             ham              |             spam              |
+| -------------------------- | ---------------------------- | ----------------------------- |
+| **ratios-to-total-emails** | Ratio of ham to total emails | Ratio of spam to total emails |
 
 **Word Frequencies Dataset:**<br>
 The structure of the word frequencies dataset (using "," as a separator):
@@ -187,7 +195,7 @@ The structure of the word frequencies dataset (using "," as a separator):
 
 The project implements three classes: SpamDetector, TrainMultinomialNB, and TextProcessor. They are located in modules under their respective names.
 
-### <a name="Class_TextProcessor"> Class TextProcessor </a> - <a href="./code/TextProcessor.py">here</a>.
+### <a name="Class_TextProcessor"> Class TextProcessor </a> - [here][link_TextProcessor.py].
 
 The TextProcessor class is used for text processing and tokenization. This class has only one public method, called `pipeline`, representing a text processing pipeline. This pipeline includes the following steps: first, all non-ASCII characters are removed from the passed text, then the text is converted to lowercase and short words are removed, then stop-words are removed, stemming is applied, and finally tokenization occurs.<br>
 When initializing an object of the TextProcessor class, you can influence the pipeline. You can set the minimum word length to be considered short (by default, this is 2; you can set any value greater than or equal to 0). Also, user-defined words can be added to the default stop word list (the default list includes stop words from the NLTK and WordCloud libraries), expanding the set of stop words that will be removed from the text.<br>
@@ -245,7 +253,7 @@ def pipeline(self, raw_text: str) -> list[str]:
 ```
 </details>
 
-### <a name="Class_TrainMultinomialNB"> Class TrainMultinomialNB </a> - <a href="./code/TrainMultinomialNB.py">here</a>.
+### <a name="Class_TrainMultinomialNB"> Class TrainMultinomialNB </a> - [here][link_TrainMultinomialNB.py].
 
 The TrainMultinomialNB class is used for training the classifier. Training is performed based on a prepared dataset of emails, the structure of which is presented in the <a href="#custom_dataset_format">Сustom Dataset Format</a> section. The result of the training is two CSV files, the structure of which can be viewed in the <a href="#datasets_format_for_initializing_Multinomial_Naive_Bayes_Classifier">Datasets format for initializing Multinomial Naive Bayes Classifier</a> section.<br>
 When initializing an object of the TrainMultinomialNB class, it is necessary to specify the path to the prepared dataset of email messages.<br>
@@ -365,7 +373,7 @@ def set_min_word_frequency(cls, min_word_frequency: int) -> None:
 ```
 </details>
 
-###  <a name="Class_SpamDetector"> Class SpamDetector </a> - <a href="./code/SpamDetector.py">here</a>.
+###  <a name="Class_SpamDetector"> Class SpamDetector </a> - [here][link_SpamDetector.py].
 
 The SpamDetector class is used for email classification. To initialize an object of this class, you need to pass the paths to two CSV files obtained after model training.<br>
 You can influence the classifier using the class methods. Using the `set_smoothing_factor` method, you can change the value of the smoothing factor to any other value in the range from 0 to 1, inclusive. By default, the smoothing factor value is set to 1, which suggests Laplace smoothing. Also, using the `set_processor` method, you can set parameters for initializing an object of the TextProcessor class.<br>
@@ -515,10 +523,58 @@ def set_smoothing_factor(cls, smoothing_factor: float) -> None:
 
 
 
+<!-- Training -->
+## <a name="training"> Training </a>
+
+Here is the output obtained from running the model training process, i.e., the output of the `train` method from the `TrainMultinomialNB` class.
+
+Below is the information regarding the time taken for training on the largest dataset used in the project, namely Dataset 3 - **Spam Email Classification Dataset**. (Information about all datasets used in the project is provided in the <a href="#dataset">Dataset</a> section.)
+
+![Time spent on training (example output of the "train" method from the "TrainMultinomialNB" class)](./source_for_README/1_Time_training.png)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
 <!-- Testing -->
 ## <a name="testing"> Testing </a>
 
-In progress...
+Here are the main points and results of the testing, but you can also review more detailed information about it in the Jupyter Notebook file - [here][link_spam_classifier_testing.ipynb].
+
+### <a name="some_information_about_testing"> Some information about testing </a>
+
+The Multinomial Naive Bayes classifier was trained on the largest dataset in the project - Dataset 3: **Spam Email Classification Dataset**. Three classifiers were implemented, each of which used the `word_frequencies` dataset obtained during training, and with the following probability distributions for obtaining spam and ham emails, which were manually specified (the corresponding probability distributions were saved in CSV files located [here][folder_for_test_Naive_Multinomial_Bayes_classifier]).
+
+![Three cases of probabilities P(ham) and P(spam)](./source_for_README/2_Three_cases_of_probabilities_P(ham)_and_P(spam).png)
+
+It's also worth noting that:
+- For all tests, the same smoothing factor was used, set to 1, i.e., Laplace smoothing was applied;
+- For all tests, the stop words ['ect', 'enron', 'hou', 'hpl', 'subject'] were appended to the default stop word list. The default list includes stop words from the NLTK and WordCloud libraries;
+- Testing was conducted separately for each dataset: 
+  - Dataset 1 - **Spam Mails Dataset**;
+  - Dataset 2 - **Spam Email Dataset**.
+
+### <a name="dataset_1_testing_results"> Dataset 1 Testing Results: Spam Mails Dataset </a>
+
+![Confusion Matrix for the Classifier dataset1](./source_for_README/3_Confusion_Matrix_for_the_Classifier_dataset1.png)
+
+|               | MultinomialNB_case1 | MultinomialNB_case2 | MultinomialNB_case3 |
+|---------------|---------------------|---------------------|---------------------|
+| **Accuracy**  | 0.9559079481725005  | 0.9568748791336299  | 0.9541674724424676  |
+| **Precision** | 0.9559706470980653  | 0.9873248832555037  | 0.9639759839893263  |
+| **Recall**    | 0.8984326018808777  | 0.8788598574821853  | 0.8875921375921376  |
+| **F1 score**  | 0.9263089851325145  | 0.9299403078856425  | 0.9242085065558043  |
+
+### <a name="dataset_2_testing_results"> Dataset 2 Testing Results: Spam email Dataset </a>
+
+![Confusion Matrix for the Classifier dataset2](./source_for_README/4_Confusion_Matrix_for_the_Classifier_dataset2.png)
+
+|               | MultinomialNB_case1 | MultinomialNB_case2 | MultinomialNB_case3 |
+|---------------|---------------------|---------------------|---------------------|
+| **Accuracy**  | 0.9692737430167597  | 0.9645600558659218  | 0.9680516759776536  |
+| **Precision** | 0.956140350877193   | 0.9685672514619883  | 0.9612573099415205  |
+| **Recall**    | 0.9185393258426966  | 0.8922558922558923  | 0.9100346020761245  |
+| **F1 score**  | 0.9369627507163324  | 0.9288468279004557  | 0.9349448986846783  |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -568,13 +624,14 @@ Distributed under the BSD 3-Clause "New" or "Revised" License. See [LICENSE](LIC
 [link_to_dataset3_kaggle]: https://www.kaggle.com/datasets/purusinghvi/email-spam-classification-dataset
 [email_ratios_dataset3]: ./dataset/email_dataset_3/model_data/email_ratios.csv
 [word_frequency_dataset3]: ./dataset/email_dataset_3/model_data/word_frequencies.csv
+[folder_for_test_Naive_Multinomial_Bayes_classifier]: ./dataset/for_test_Naive_Multinomial_Bayes_classifier/
 
-[link_SpamDetector.py]: [./code/SpamDetector.py]
-[link_TextProcessor.py]: [./code/TextProcessor.py]
-[link_TrainMultinomialNB.py]: [./code/TrainMultinomialNB.py]
-[link_dataset_preparation_and_analysis.ipynb]: [./code/dataset_preparation_and_analysis.ipynb]
-[link_spam_classifier_testing.ipynb]: [./code/spam_classifier_testing.ipynb]
-[link_Coursework Report.pdf]: [./%20Coursework%20Report.pdf]
+[link_SpamDetector.py]: ./code/SpamDetector.py
+[link_TextProcessor.py]: ./code/TextProcessor.py
+[link_TrainMultinomialNB.py]: ./code/TrainMultinomialNB.py
+[link_dataset_preparation_and_analysis.ipynb]: ./code/dataset_preparation_and_analysis.ipynb
+[link_spam_classifier_testing.ipynb]: ./code/spam_classifier_testing.ipynb
+[link_Coursework_Report.pdf]: ./%20Coursework%20Report.pdf
 
 [Badge_Python]: https://img.shields.io/badge/3.10-ffffff?logo=python&logoColor=FFFFFF&label=Python&labelColor=000000
 [Badge_NLTK]: https://img.shields.io/badge/NLTK-000000
