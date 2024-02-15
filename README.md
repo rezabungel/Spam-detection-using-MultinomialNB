@@ -55,15 +55,15 @@
 
 NLP - Natural Language Processing. This field in machine learning is dedicated to the recognition, generation, and processing of spoken and written human language. It intersects the disciplines of artificial intelligence and linguistics. NLP addresses various natural language processing tasks, such as speech recognition, text processing, information extraction, information analysis, text and speech generation, automatic summarization, and machine translation. In this project, a solution for text analysis has been implemented to determine the category (spam or ham) of a given text (message).
 
-As of today, the issue of spam remains relevant. For instance, statistical data from 2019 provided by securelist.ru ([link_to_the_article][link_to_the_article_securelist]) indicate that globally, more than 50% of email traffic is comprised of spam. The share of spam in global email traffic for the year 2019 is shown in the figure below.
+As of today, the issue of spam remains relevant. For instance, statistical data from 2019 provided by securelist.ru ([link to the article][link_to_the_article_securelist]) indicate that globally, more than 50% of email traffic is comprised of spam. The share of spam in global email traffic for the year 2019 is shown in the figure below.
 
-![The share of spam in global email traffic, 2019.](./source_for_README/0_The_share_of_spam_in_global_email_traffic_2019.png)
+![The share of spam in global email traffic, 2019.][0_source_for_README]
 
-The project implements a **Multinomial Naive Bayes Classifier**. It is relatively simple to implement and demonstrates high accuracy, making it an effective solution for this problem. The implementation of the classifier addresses and resolves the following issues: "arithmetic overflow" and "unknown words". Laplace smoothing is used to address the latter issue, but you can set your own smoothing factor within the range `0 < __smoothing_factor <= 1`. Laplace smoothing corresponds to `__smoothing_factor = 1`. Classifier testing results confirm its high accuracy and suggest potential for further improvement.
+In this project, a **Multinomial Naive Bayes Classifier** is implemented. It is relatively simple to implement and demonstrates high accuracy, making it an effective solution for the spam and ham text (message) classification problem. The classifier testing results not only confirm its high accuracy but also demonstrate potential for accuracy improvement. It is worth noting that in this implementation of the classifier addresses and resolves the following issues: "arithmetic overflow" and "unknown words". Laplace smoothing is used to address the latter issue, but you can set your own smoothing factor within the range `0 < __smoothing_factor <= 1`. Laplace smoothing corresponds to `__smoothing_factor = 1`.
 
-The project code is located in three files: <a href="./code/SpamDetector.py">SpamDetector.py</a>, <a href="./code/TextProcessor.py">TextProcessor.py</a>, and <a href="./code/TrainMultinomialNB.py">TrainMultinomialNB.py</a>. In addition to these core files, the project includes the <a href="./code/dataset_preparation_and_analysis.ipynb">dataset_preparation_and_analysis.ipynb</a> file, which contains analysis with graphs of <a href="./dataset/email_dataset_1/spam_ham_dataset.csv">dataset 1</a>. The testing results of the implemented classifier can be found in the <a href="./code/spam_classifier_testing.ipynb">spam_classifier_testing.ipynb</a> file.
+The project code is located in three files: [SpamDetector.py][link_SpamDetector.py], [TextProcessor.py][link_TextProcessor.py], and [TrainMultinomialNB.py][link_TrainMultinomialNB.py]. In addition to these core files, the project includes the [dataset_preparation_and_analysis.ipynb][link_dataset_preparation_and_analysis.ipynb] file, which contains analysis with graphs of [dataset 1][link_to_dataset1]. The testing results of the implemented classifier can be found in the [spam_classifier_testing.ipynb][link_spam_classifier_testing.ipynb] file.
 
-A detailed report on the theoretical and practical aspects of the work can be found in <a href="./%20Coursework%20Report.pdf">Coursework Report.pdf</a> (in Russian). Additionally, information about the practical implementation can be obtained from the code, which is sufficiently well-documented (I hope). The code documentation is provided in English. Information about the datasets used for training and testing can be found in the <a href="#dataset">Dataset</a> section. The structure of a dataset ready for training is presented in the <a href="#custom_dataset_format">Сustom Dataset Format</a> section. The structure of datasets obtained after training, which is used for initializing the classifier, is located in the <a href="#datasets_format_for_initializing_Multinomial_Naive_Bayes_Classifier">Datasets format for initializing Multinomial Naive Bayes Classifier</a> section. Information on how to work with this project is available in the <a href="#usage">Usage</a> section, while the testing results can be found in the <a href="#testing">Testing</a> section or in the corresponding <a href="./code/spam_classifier_testing.ipynb">file</a>.
+A detailed report on the theoretical and practical aspects of the work can be found in the file [Coursework Report.pdf][link_Coursework_Report.pdf] (in Russian). Additionally, information about the practical implementation can be obtained from the code, which is sufficiently well-documented (I hope). The code documentation is provided in English. Information about the datasets used in the project can be found in the <a href="#dataset">Dataset</a> section. The structure of a dataset ready for training is presented in the <a href="#custom_dataset_format">Сustom Dataset Format</a> section. The structure of datasets obtained after training, which is used for initializing the classifier, is located in the <a href="#datasets_format_for_initializing_Multinomial_Naive_Bayes_Classifier">Datasets format for initializing Multinomial Naive Bayes Classifier</a> section. Information on how to work with this project is available in the <a href="#usage">Usage</a> section, an example of the output information obtained from running the model training process is shown in the <a href="#training">Training</a> section, and the testing results can be found in the <a href="#testing">Testing</a> section or in the corresponding [file][link_spam_classifier_testing.ipynb].
 
 ### <a name="built-with"> Built With </a>
 
@@ -530,7 +530,7 @@ Here is the output obtained from running the model training process, i.e., the o
 
 Below is the information regarding the time taken for training on the largest dataset used in the project, namely Dataset 3 - **Spam Email Classification Dataset**. (Information about all datasets used in the project is provided in the <a href="#dataset">Dataset</a> section.)
 
-![Time spent on training (example output of the "train" method from the "TrainMultinomialNB" class)](./source_for_README/1_Time_training.png)
+![Time spent on training (example output of the "train" method from the "TrainMultinomialNB" class)][1_source_for_README]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -545,18 +545,18 @@ Here are the main points and results of the testing, but you can also review mor
 
 The Multinomial Naive Bayes classifier was trained on the largest dataset in the project - Dataset 3: **Spam Email Classification Dataset**. Three classifiers were implemented, each of which used the `word_frequencies` dataset obtained during training, and with the following probability distributions for obtaining spam and ham emails, which were manually specified (the corresponding probability distributions were saved in CSV files located [here][folder_for_test_Naive_Multinomial_Bayes_classifier]).
 
-![Three cases of probabilities P(ham) and P(spam)](./source_for_README/2_Three_cases_of_probabilities_P(ham)_and_P(spam).png)
+![Three cases of probabilities P(ham) and P(spam)][2_source_for_README]
 
 It's also worth noting that:
 - For all tests, the same smoothing factor was used, set to 1, i.e., Laplace smoothing was applied;
 - For all tests, the stop words ['ect', 'enron', 'hou', 'hpl', 'subject'] were appended to the default stop word list. The default list includes stop words from the NLTK and WordCloud libraries;
 - Testing was conducted separately for each dataset: 
   - Dataset 1 - **Spam Mails Dataset**;
-  - Dataset 2 - **Spam Email Dataset**.
+  - Dataset 2 - **Spam email Dataset**.
 
 ### <a name="dataset_1_testing_results"> Dataset 1 Testing Results: Spam Mails Dataset </a>
 
-![Confusion Matrix for the Classifier dataset1](./source_for_README/3_Confusion_Matrix_for_the_Classifier_dataset1.png)
+![Confusion Matrix for the Classifier dataset1][3_source_for_README]
 
 |               | MultinomialNB_case1 | MultinomialNB_case2 | MultinomialNB_case3 |
 |---------------|---------------------|---------------------|---------------------|
@@ -567,7 +567,7 @@ It's also worth noting that:
 
 ### <a name="dataset_2_testing_results"> Dataset 2 Testing Results: Spam email Dataset </a>
 
-![Confusion Matrix for the Classifier dataset2](./source_for_README/4_Confusion_Matrix_for_the_Classifier_dataset2.png)
+![Confusion Matrix for the Classifier dataset2][4_source_for_README]
 
 |               | MultinomialNB_case1 | MultinomialNB_case2 | MultinomialNB_case3 |
 |---------------|---------------------|---------------------|---------------------|
@@ -631,7 +631,7 @@ Distributed under the BSD 3-Clause "New" or "Revised" License. See [LICENSE](LIC
 [link_TrainMultinomialNB.py]: ./code/TrainMultinomialNB.py
 [link_dataset_preparation_and_analysis.ipynb]: ./code/dataset_preparation_and_analysis.ipynb
 [link_spam_classifier_testing.ipynb]: ./code/spam_classifier_testing.ipynb
-[link_Coursework_Report.pdf]: ./%20Coursework%20Report.pdf
+[link_Coursework_Report.pdf]: ./Coursework%20Report.pdf
 
 [Badge_Python]: https://img.shields.io/badge/3.10-ffffff?logo=python&logoColor=FFFFFF&label=Python&labelColor=000000
 [Badge_NLTK]: https://img.shields.io/badge/NLTK-000000
@@ -643,3 +643,9 @@ Distributed under the BSD 3-Clause "New" or "Revised" License. See [LICENSE](LIC
 [Badge_WordCloud]: https://img.shields.io/badge/WordCloud-000000
 
 [link_to_the_article_securelist]: https://securelist.ru/spam-report-2019/95727/
+
+[0_source_for_README]: ./source_for_README/0_The_share_of_spam_in_global_email_traffic_2019.png
+[1_source_for_README]: ./source_for_README/1_Time_training.png
+[2_source_for_README]: ./source_for_README/2_Three_cases_of_probabilities_P(ham)_and_P(spam).png
+[3_source_for_README]: ./source_for_README/3_Confusion_Matrix_for_the_Classifier_dataset1.png
+[4_source_for_README]: ./source_for_README/4_Confusion_Matrix_for_the_Classifier_dataset2.png
